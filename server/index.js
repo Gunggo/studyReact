@@ -1,11 +1,10 @@
 const express = require('express')
 const app = express()
-const port = 5000
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 
 // db설정
-const config = require('./key');
+const config = require('./config/key');
 
 const { auth } = require("./middleware/auth");
 const { User } = require("./models/User");
@@ -103,6 +102,9 @@ app.get('/api/user/logout', auth, (req, res) => {
             })
         })
 })
+
+
+const port = 5000
 
 // 접속 포트 log찍기
 app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`))
