@@ -43,7 +43,7 @@ userSchema.pre('save', function (next) {
     let user = this;
 
     if (user.isModified('password')) {
-        //비밀번호를 암호화
+        //비밀번호 암호화
         bcrypt.genSalt(saltRounds, function (err, salt) {
             if (err) return next(err)
 
@@ -79,8 +79,21 @@ userSchema.methods.generateToken = function(cb) {
         if(err) return cb(err);
         cb(null, user);
     })
+}
 
+// 토큰 비교 메서드
+userSchema.statics.findByToken = function(token, cb) {
+    
+    let user = this;
 
+    // 토큰 decode
+    // 클라이언트 토큰과 DB 토큰 비교
+    jwt.verify(token, 'secretToken', function(err, decode) {
+        user.findOne({"_id": decode, "token": token }, function(err, user) {
+            if (err) return cb(err);
+            cb(null, user)
+        })
+    })
 }
 
 const User = mongoose.model('User', userSchema);
